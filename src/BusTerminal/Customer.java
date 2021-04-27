@@ -7,11 +7,15 @@ public class Customer extends Thread{
     int id;
     MainEntrance entrance;
     MainEntrance entrance2;
+    TicketMachine tm;
+    Ticket t=null;
 
-    public Customer(MainEntrance e, MainEntrance e2){
+    public Customer(MainEntrance e, MainEntrance e2,TicketMachine tm,Ticket t){
         this.id=count++;
         this.entrance=e;
         this.entrance2=e2;
+        this.tm=tm;
+        this.t=t;
     }
 
 
@@ -31,7 +35,8 @@ public class Customer extends Thread{
                     e.printStackTrace();
                 }
             }
-            entrance.leave(this);
+            //entrance.leave(this);
+
         }else {
             while (r==false){
                 //randomise entrance
@@ -43,8 +48,35 @@ public class Customer extends Thread{
                     e.printStackTrace();
                 }
             }
-            entrance2.leave(this);
+            //entrance2.leave(this);
         }
+
+        boolean ticketBool=false;
+        while (ticketBool==false){
+            try {//time to move to other place or consider to stay
+                sleep(new Random().nextInt(1000)*5);
+            }catch (Exception e){}
+            ran= new Random().nextInt(3);
+
+            if (ran==0){
+                ticketBool=tm.generateTicket(this);
+            }else if (ran==1){
+
+            }else {
+
+            }
+        }
+
+        entrance.leave(this);
+
+
+
+
+
+
+
+
+
 
 
 
