@@ -9,38 +9,50 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MainEntrance {
     String direction;
     static int count=0;
-    Semaphore limSema=new Semaphore(100,true);//ensure the fairness limSema is the gate limit
-    Semaphore entSema=new Semaphore(1,true); //customer limit where 1 customer at a time
-    Semaphore leaveSema= new Semaphore(1,true);
+//    Semaphore limSema=new Semaphore(100,true);//ensure the fairness limSema is the gate limit
+//    Semaphore entSema=new Semaphore(1,true); //customer limit where 1 customer at a time
+//    Semaphore leaveSema= new Semaphore(1,true);
     Guard g;
 
-    boolean blocked=false;
+    static boolean blocked=false;
 
     MainEntrance(String direction, Guard g){
         this.direction=direction;
         this.g=g;
     }
 
-    public boolean enter(Customer c) throws InterruptedException {
+    synchronized public boolean enter(Customer c) throws InterruptedException {
         try{
-            limSema.acquire();
-            entSema.acquire();
-            System.out.println(g.getName() + ": Welcome to APBT!");
-            count++;
-            Thread.sleep(new Random().nextInt(10)*100);
-            //apparent when the sleep become longer
-            System.out.println(c.getName() + ": Customer entered the building through " + direction + " entrance.\t\t\t\t\t Count= " + count);
-            entSema.release();
+//            limSema.acquire();
+//            entSema.acquire();
+            if (count<100&&blocked==false){
+                System.out.println(g.getName() + ": Welcome to APBT!");
+                count++;
+                Thread.sleep(new Random().nextInt(10)*10);
+                //apparent when the sleep become longer
+                System.out.println(c.getName() + ": Customer entered the building through " + direction + " entrance.\t\t\t\t\t Count= " + count);
+                if (count==99){
+                    blocked=true;
+                }
+                return true;
+            }
+
+
         }catch (Exception e){}
-
-
         return false;
     }
 
-    public void leave(Customer c){
+    synchronized public void leave(Customer c){
+        if (count<31&&blocked==true){
+            blocked=false;
+        }
         count=count-1;
-        limSema.release();
         //counter gets duplicated even though sync is used
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println(c.getName()+": Left APBT."+"\t\t\t\t\t Count= "+count);
     }
 
