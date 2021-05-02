@@ -1,37 +1,21 @@
 package BusTerminal;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class TicketCounter {
-    String staffName;
     boolean toiletBreak=false;
+    boolean occupied=false;
+    TicketCounterStaff staff= new TicketCounterStaff(this);
+    ArrayList<Customer> customerAL= new ArrayList<Customer>();
+    TicketCounter(){}
 
-    TicketCounter(String staffName){
-        this.staffName=staffName;
+    TicketCounter(TicketCounterStaff staff, ArrayList<Customer> al){
+        this.staff=staff;
+        this.customerAL=al;
     }
 
-    synchronized boolean sellTicket(Customer c){
-        if (toiletBreak==true){
-            System.out.println("Staff is going for a toilet break.");
-            System.out.println(c.getName()+" buy the ticket from other option");
-            return false;
-        }else {
-            int ran= new Random().nextInt(3);
-            if (ran==0){ //left
-                return true;
-            }else if (ran==1){//middle
-                return true;
-            }else {//right
-                return true;
-            }
 
-        }
-
-    }
-
-    static void toiletBreak(){
-
-    }
 
 
 }
