@@ -19,18 +19,19 @@ public class Main {
 
         for(int i=0;i<150;i++){
             c[i]=new Customer(e1,e2,tm,tc1,t);
-            tc1.customerAL.add(c[i]);
+
         }
 
         for(int i=0;i<150;i++){
             c[i].start();
-            tc1.staff.start();
         }
+        tc1.staff.start();
+
         try {
             for(int i=0;i<150;i++){
                 c[i].join();
-                tc1.staff.join();
             }
+            tc1.staff.join();
         }catch (Exception e){}
 
 

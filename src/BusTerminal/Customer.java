@@ -56,35 +56,25 @@ public class Customer extends Thread{
             try {//time to move to other place or consider to stay
                 sleep(new Random().nextInt(1000)*5);
             }catch (Exception e){}
-            ran= new Random().nextInt(1);
-
+            ran= new Random().nextInt(2);
             if (ran==0){//uses the ticket machine
-                //ticketBool=tm.generateTicket(this);
-                while (true){
-                    if (!tc.toiletBreak){//if toilet break customer will leave
-                        try{
-                            while (tc.occupied){//wait for the ticket counter staff
-                                synchronized (tc.staff){
-                                    tc.staff.wait();
-                                }
-                                System.out.println(this.getName()+" is waiting for his/her turn.");
-                            }
-                            synchronized (tc){
-                                tc.occupied=false;
-                                System.out.println(tc.staff.getName() + " paying for the ticket.");
-                                synchronized (this){
-                                    this.notify(); //notify itself that the task has been finished
-                                    System.out.println(this.getName() + " has left the queue.");
-                                }
-                            }
-                        }catch (Exception e){}
-                    }else {
-                        break;
+                if (tc.staff.l.tryLock() == true){
+                    if (tc.toiletBreak==false){
+                        ticketBool=tc.printTicket(this); //getting the print ticket
+                        System.out.println(this.getName()+": Customer has purchased the ticket.");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(this.getName()+": Customer has left the queue.");
+                        tc.staff.l.unlock();
+                    }else { //if toilet break is true, customer will release the lock
+                        tc.staff.l.unlock();
                     }
-
                 }
             }else if (ran==1){//uses the counter 1
-
+                ticketBool=tm.generateTicket(this);
             }else {// counter 2
 
             }

@@ -9,7 +9,7 @@ public class TicketMachine {
 
     boolean generateTicket(Customer c) {
         if (limTicket.availablePermits() == 0) {
-            System.out.println("Ticket machine: " + c.getName() + " please wait for the queue.");
+            //System.out.println("Ticket machine: " + c.getName() + " please wait for the queue.");
             return false;
 
         } else {

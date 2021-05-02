@@ -23,21 +23,17 @@ public class MainEntrance {
 
     synchronized public boolean enter(Customer c) throws InterruptedException {
         try{
-//            limSema.acquire();
-//            entSema.acquire();
             if (count<100&&blocked==false){
                 System.out.println(g.getName() + ": Welcome to APBT!");
                 count++;
+                System.out.println(c.getName() + ": Customer entered the building through " + direction + " entrance.\t\t\t\t\t Count= " + count);
                 Thread.sleep(new Random().nextInt(10)*10);
                 //apparent when the sleep become longer
-                System.out.println(c.getName() + ": Customer entered the building through " + direction + " entrance.\t\t\t\t\t Count= " + count);
                 if (count==99){
                     blocked=true;
                 }
                 return true;
             }
-
-
         }catch (Exception e){}
         return false;
     }
