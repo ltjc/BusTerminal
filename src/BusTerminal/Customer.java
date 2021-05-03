@@ -1,5 +1,6 @@
 package BusTerminal;
 
+import javax.xml.stream.FactoryConfigurationError;
 import java.util.Random;
 
 public class Customer extends Thread{
@@ -8,16 +9,32 @@ public class Customer extends Thread{
     MainEntrance entrance;
     MainEntrance entrance2;
     TicketMachine tm;
-    TicketCounter tc;
+    TicketCounter tc1,tc2;
     Ticket t=null;
+    WaitingArea waL;
+    WaitingArea waM;
+    WaitingArea waR;
+    WaitingArea selectedWA;
+    Foyer foyer;
+    TicketInspector TI;
+    boolean enteredWA=false;
+    boolean enteredFoyer=false;
 
-    public Customer(MainEntrance e, MainEntrance e2,TicketMachine tm,TicketCounter tc,Ticket t){
+
+    public Customer(MainEntrance e, MainEntrance e2,TicketMachine tm,TicketCounter tc1,TicketCounter tc2,WaitingArea waL,
+                    WaitingArea waM,WaitingArea waR,TicketInspector TI,Ticket t){
         this.id=count++;
         this.entrance=e;
         this.entrance2=e2;
         this.tm=tm;
         this.t=t;
-        this.tc= tc;
+        this.tc1= tc1;
+        this.tc2= tc2;
+        this.waL=waL;
+        this.waM=waM;
+        this.waR=waR;
+        this.TI=TI;
+        this.foyer=foyer;
     }
 
 
@@ -40,7 +57,6 @@ public class Customer extends Thread{
         }else {
             while (r==false){
                 //randomise entrance
-
                 try {
                     r=entrance2.enter(this);
                     sleep(new Random().nextInt(10)*10);
@@ -56,11 +72,14 @@ public class Customer extends Thread{
             try {//time to move to other place or consider to stay
                 sleep(new Random().nextInt(1000)*5);
             }catch (Exception e){}
-            ran= new Random().nextInt(2);
+            ran= new Random().nextInt(3);
             if (ran==0){//uses the ticket machine
-                if (tc.staff.l.tryLock() == true){
-                    if (tc.toiletBreak==false){
-                        ticketBool=tc.printTicket(this); //getting the print ticket
+                ticketBool=tm.generateTicket(this);
+
+            }else if (ran==1){//uses the counter 1
+                if (tc1.staff.l.tryLock() == true){
+                    if (tc1.toiletBreak==false){
+                        ticketBool=tc1.printTicket(this); //getting the print ticket
                         System.out.println(this.getName()+": Customer has purchased the ticket.");
                         try {
                             sleep(1000);
@@ -68,15 +87,96 @@ public class Customer extends Thread{
                             e.printStackTrace();
                         }
                         System.out.println(this.getName()+": Customer has left the queue.");
-                        tc.staff.l.unlock();
+                        tc1.staff.l.unlock();
                     }else { //if toilet break is true, customer will release the lock
-                        tc.staff.l.unlock();
+                        tc1.staff.l.unlock();
                     }
                 }
-            }else if (ran==1){//uses the counter 1
-                ticketBool=tm.generateTicket(this);
             }else {// counter 2
+                if (tc2.staff.l.tryLock() == true){
+                    if (tc2.toiletBreak==false){
+                        ticketBool=tc2.printTicket(this); //getting the print ticket
+                        System.out.println(this.getName()+": Customer has purchased the ticket.");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(this.getName()+": Customer has left the queue.");
+                        tc2.staff.l.unlock();
+                    }else { //if toilet break is true, customer will release the lock
+                        tc2.staff.l.unlock();
+                    }
+                }
+            }
+        }
+        //going to departure //maximum of 10 people
+        if (t.station=="Left"){//setting where the customer go
+            selectedWA=waL;
+        }else if (t.station=="Middle"){
+            selectedWA=waM;
+        }else {
+            selectedWA=waR;
+        }
 
+        while (!enteredWA){
+            enteredWA=selectedWA.enter(this); //enter the waiting area
+        }
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally {
+            selectedWA.leaveWA(this); //leaving the waiting area
+        }
+        //add departure here
+
+        while (t.scanned==false||t.inspected==false){
+            if (t.scanned==false&&t.inspected==false){//random the sequence here
+                int ranSeq= new Random().nextInt(2);
+                if (ranSeq==0){//go scan
+                    t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
+                }else {// go inspect
+                    if(TI.l.tryLock()==true){ //if the customer manage to get the lock
+                        if (TI.toiletBreak==false){
+                            System.out.println(getName()+" Customer: The ticket is being inspected by the inspector");
+                            try {
+                                Thread.sleep(1000);
+                                t.inspected=true;
+                                System.out.println(getName()+" Customer: The ticket inspected.");
+
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }finally {
+                                TI.l.unlock();
+                            }
+                        }else {//if the staff want to go toilet release the lock
+                            TI.l.unlock();
+                        }
+                    }
+                }
+            }else if (t.scanned==true&&t.inspected==false){//scanned but not inspected
+                if(TI.l.tryLock()==true){ //if the customer manage to get the lock
+                    if (TI.toiletBreak!=true){
+                        System.out.println(getName()+" Customer: The ticket is being inspected by the inspector");
+                        try {
+                            Thread.sleep(1000);
+                            t.inspected=true;
+                            System.out.println(getName()+" Customer: The ticket inspected.");
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }finally {
+                            TI.l.unlock();
+                        }
+
+                    }else {//if the staff want to go toilet release the lock
+                        TI.l.unlock();
+                    }
+                }
+
+            }else {//inspected but not scanned
+                t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
             }
         }
         entrance.leave(this);

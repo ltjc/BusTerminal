@@ -9,9 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MainEntrance {
     String direction;
     static int count=0;
-//    Semaphore limSema=new Semaphore(100,true);//ensure the fairness limSema is the gate limit
-//    Semaphore entSema=new Semaphore(1,true); //customer limit where 1 customer at a time
-//    Semaphore leaveSema= new Semaphore(1,true);
     Guard g;
 
     static boolean blocked=false;
@@ -51,15 +48,5 @@ public class MainEntrance {
         }
         System.out.println(c.getName()+": Left APBT."+"\t\t\t\t\t Count= "+count);
     }
-
-
-
-
-
-
-
-
-
-
 
 }

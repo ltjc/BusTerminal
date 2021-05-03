@@ -25,7 +25,7 @@ public class TicketMachine {
                     Thread.sleep(new Random().nextInt(100) * 3);
                 }catch (Exception e){}
                 breakDown(c);
-                System.out.println(c.getName() + " bought a ticket to left station.");
+                System.out.println(c.getName() + " bought a ticket to left station from Ticket Machine.");
                 c.t = new Ticket("Left");
                 System.out.println(c.getName() + " has left the queue");
                 limTicket.release();
@@ -36,7 +36,7 @@ public class TicketMachine {
                     Thread.sleep(new Random().nextInt(100) * 3);
                 }catch (Exception e){}
                 breakDown(c);
-                System.out.println(c.getName() + " bought a ticket to middle station.");
+                System.out.println(c.getName() + " bought a ticket to middle station from Ticket Machine.");
                 c.t = new Ticket("Middle");
                 System.out.println(c.getName() + " has left the queue");
                 limTicket.release();
@@ -47,7 +47,7 @@ public class TicketMachine {
                     Thread.sleep(new Random().nextInt(100) * 3);//step up to counter
                 }catch (Exception e){}
                 breakDown(c);
-                System.out.println(c.getName() + " bought a ticket to right station.");
+                System.out.println(c.getName() + " bought a ticket to right station from Ticket Machine.");
                 c.t = new Ticket("Right");
                 System.out.println(c.getName() + " has left the queue");
                 limTicket.release();
