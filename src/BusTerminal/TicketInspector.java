@@ -12,9 +12,10 @@ public class TicketInspector extends Staff{
     public void run() {
         while (true) {
             try {
-                Thread.sleep(5000 + new Random().nextInt(10)); //45 second to 60 second
-                toiletBreak = true;
-                while (l.tryLock() != true) { //try until it get the lock
+                Thread.sleep(45000 + new Random().nextInt(10000)); //45 second to 60 second
+
+                toiletBreak=true;
+                while (!l.tryLock()) { //try until it get the lock
                     Thread.sleep(1000); //wait 1 second to get the lock again
                     System.out.println(getName() + " Ticket inspector: Toilet break soon."); //try to get lock first
                 }

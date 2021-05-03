@@ -132,51 +132,48 @@ public class Customer extends Thread{
         //add departure here
 
         while (t.scanned==false||t.inspected==false){
-            if (t.scanned==false&&t.inspected==false){//random the sequence here
-                int ranSeq= new Random().nextInt(2);
+            int ranSeq= new Random().nextInt(2);
+            if (t.scanned==false&&t.inspected==false){//random when both are not checked
                 if (ranSeq==0){//go scan
                     t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
                 }else {// go inspect
-                    if(TI.l.tryLock()==true){ //if the customer manage to get the lock
-                        if (TI.toiletBreak==false){
-                            System.out.println(getName()+" Customer: The ticket is being inspected by the inspector");
+                    if (TI.l.tryLock() == true) { //if the customer manage to get the lock
+                        if (TI.toiletBreak == false) {
+                            System.out.println(getName() + " Customer: The ticket is being inspected by the inspector");
                             try {
-                                Thread.sleep(1000);
-                                t.inspected=true;
-                                System.out.println(getName()+" Customer: The ticket inspected.");
-
+                                sleep(1000);
+                                t.inspected = true;
+                                System.out.println(getName() + " Customer: The ticket inspected.");
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
-                            }finally {
+                            } finally {
                                 TI.l.unlock();
                             }
-                        }else {//if the staff want to go toilet release the lock
+                        } else {//if the staff want to go toilet release the lock
                             TI.l.unlock();
                         }
                     }
                 }
-            }else if (t.scanned==true&&t.inspected==false){//scanned but not inspected
-                if(TI.l.tryLock()==true){ //if the customer manage to get the lock
-                    if (TI.toiletBreak!=true){
-                        System.out.println(getName()+" Customer: The ticket is being inspected by the inspector");
-                        try {
-                            Thread.sleep(1000);
-                            t.inspected=true;
-                            System.out.println(getName()+" Customer: The ticket inspected.");
+            }else if(t.scanned==false){
+                t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
 
+            }else {
+                if (TI.l.tryLock() == true) { //if the customer manage to get the lock
+                    if (TI.toiletBreak == false) {
+                        System.out.println(getName() + " Customer: The ticket is being inspected by the inspector");
+                        try {
+                            sleep(1000);
+                            t.inspected = true;
+                            System.out.println(getName() + " Customer: The ticket inspected.");
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }finally {
+                        } finally {
                             TI.l.unlock();
                         }
-
-                    }else {//if the staff want to go toilet release the lock
+                    } else {//if the staff want to go toilet release the lock
                         TI.l.unlock();
                     }
                 }
-
-            }else {//inspected but not scanned
-                t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
             }
         }
         entrance.leave(this);

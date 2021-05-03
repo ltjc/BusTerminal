@@ -21,7 +21,7 @@ public class TicketCounterStaff extends Staff{
                 synchronized (tc){ //sync to ensure no loss of data
                     tc.toiletBreak=true;
                 }
-                while (l.tryLock()!=true){ //try until it get the lock
+                while (l.tryLock()==false){ //try until it get the lock
                     Thread.sleep(1000); //wait 1 second to check the ticket again
                     System.out.println(getName()+" ticket counter staff: Toilet break soon."); //try to get lock first
                 }
