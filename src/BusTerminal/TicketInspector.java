@@ -8,12 +8,12 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TicketInspector extends Staff{
     boolean toiletBreak=false;
     Lock l = new ReentrantLock(true);
+    String currentLocation="Left";
 
     public void run() {
-        while (true) {
+        while (!Main.clear) {
             try {
                 Thread.sleep(45000 + new Random().nextInt(10000)); //45 second to 60 second
-
                 toiletBreak=true;
                 while (!l.tryLock()) { //try until it get the lock
                     Thread.sleep(1000); //wait 1 second to get the lock again

@@ -26,7 +26,7 @@ public class MainEntrance {
                 System.out.println(c.getName() + ": Customer entered the building through " + direction + " entrance.\t\t\t\t\t Count= " + count);
                 Thread.sleep(new Random().nextInt(10)*10);
                 //apparent when the sleep become longer
-                if (count==99){
+                if (count==100){
                     blocked=true;
                 }
                 return true;
@@ -47,6 +47,9 @@ public class MainEntrance {
             e.printStackTrace();
         }
         System.out.println(c.getName()+": Left APBT."+"\t\t\t\t\t Count= "+count);
+        if(count==0) {
+            Main.clear=true;
+        }
     }
 
 }

@@ -15,7 +15,7 @@ public class TicketCounterStaff extends Staff{
     }
 
     public void run(){
-        while (true){
+        while (!Main.clear){
             try {
                 Thread.sleep(30000+new Random().nextInt(15000)); //30 second to 45 second
                 synchronized (tc){ //sync to ensure no loss of data

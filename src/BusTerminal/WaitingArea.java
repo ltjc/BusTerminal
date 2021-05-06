@@ -7,11 +7,14 @@ public class WaitingArea {
     String direction;
     Foyer foyer;
     ScanningMachine scanMachine;
+    Bus b;
 
-    WaitingArea(Foyer foyer,String Direction,ScanningMachine scanMachine){
+
+    WaitingArea(Foyer foyer,String Direction,ScanningMachine scanMachine,Bus b){
         this.foyer=foyer;
         this.direction=Direction;
         this.scanMachine=scanMachine;
+        this.b=b;
     }
 
     public boolean enter(Customer c){

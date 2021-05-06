@@ -3,6 +3,7 @@ package BusTerminal;
 import java.util.Random;
 
 public class Main {
+    static boolean clear=false;
 
     public static void main(String[] args) {
         Guard g1= new Guard();
@@ -22,9 +23,15 @@ public class Main {
         ScanningMachine sm1=new ScanningMachine();
         ScanningMachine sm2=new ScanningMachine();
         ScanningMachine sm3=new ScanningMachine();
-        WaitingArea waL= new WaitingArea(foyer,"Left",sm1);
-        WaitingArea waM= new WaitingArea(foyer,"Middle",sm2);
-        WaitingArea waR= new WaitingArea(foyer,"Right",sm3);
+        Bus b1= new Bus();
+        Bus b2= new Bus();
+        Bus b3= new Bus();
+        BusDriver bd1= new BusDriver(b1);
+        BusDriver bd2= new BusDriver(b2);
+        BusDriver bd3= new BusDriver(b3);
+        WaitingArea waL= new WaitingArea(foyer,"Left",sm1,b1);
+        WaitingArea waM= new WaitingArea(foyer,"Middle",sm2,b2);
+        WaitingArea waR= new WaitingArea(foyer,"Right",sm3,b3);
         TicketInspector TI= new TicketInspector();
 
 
@@ -33,7 +40,7 @@ public class Main {
 
         }
 
-        for(int i=0;i<150;i++){
+        for(int i=0;i<150;i++){//TODO change this later to accommodate more people
             c[i].start();
         }
         tc1.staff.start();
@@ -41,7 +48,7 @@ public class Main {
         TI.start();
 
         try {
-            for(int i=0;i<150;i++){
+            for(int i=0;i<150;i++){//TODO change this later to accommodate more people
                 c[i].join();
                 TI.join();
             }
@@ -51,3 +58,4 @@ public class Main {
 
     }
 }
+

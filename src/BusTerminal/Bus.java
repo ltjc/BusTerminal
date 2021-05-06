@@ -1,4 +1,6 @@
 package BusTerminal;
 
-public class Bus extends Thread{
+public class Bus{
+    int count=0;
+    final static int max= 12;
 }
