@@ -2,14 +2,14 @@ package BusTerminal;
 
 public class Ticket {
     static int ticketNo=0;
-    String station;
+    String route;
     boolean scanned=false;
     boolean inspected=false;
 
-    Ticket(String station)
+    Ticket(String route)
     {
         ticketNo+=1;
-        this.station=station;
+        this.route = route;
         scanned=false;
         inspected=false;
     }

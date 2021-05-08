@@ -20,14 +20,14 @@ public class TicketCounter {
     public boolean printTicket(Customer c){
         int ran= new Random().nextInt(3);
         if (ran==0){
-            c.t=new Ticket("Left");
-            System.out.println(c.getName() + " bought a ticket to left station from Ticket Counter "+no);
+            c.t=new Ticket("Shortest");
+            System.out.println(c.getName() + " bought a ticket to shortest route from Ticket Counter "+no);
         }else if (ran==1){
-            c.t=new Ticket("Middle");
-            System.out.println(c.getName() + " bought a ticket to middle station from Ticket Counter "+no);
+            c.t=new Ticket("Medium");
+            System.out.println(c.getName() + " bought a ticket to medium route from Ticket Counter "+no);
         }else {
-            c.t= new Ticket("Right");
-            System.out.println(c.getName() + " bought a ticket to right station from Ticket Counter "+no);
+            c.t= new Ticket("Furthest");
+            System.out.println(c.getName() + " bought a ticket to furthest route from Ticket Counter "+no);
         }
         return true;
     }

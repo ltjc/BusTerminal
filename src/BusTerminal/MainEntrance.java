@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MainEntrance {
     String direction;
     static int count=0;
+    static int totalCount=0;
     Guard g;
 
     static boolean blocked=false;
@@ -41,13 +42,8 @@ public class MainEntrance {
         }
         count=count-1;
         //counter gets duplicated even though sync is used
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println(c.getName()+": Left APBT."+"\t\t\t\t\t Count= "+count);
-        if(count==0) {
+        System.out.println(c.getName()+": Left APBT."+"\t\t\t\t\t Remaining Count= "+count);
+        if(totalCount++==50) {
             Main.clear=true;
         }
     }

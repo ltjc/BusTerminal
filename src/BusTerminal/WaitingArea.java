@@ -4,15 +4,15 @@ import java.util.concurrent.Semaphore;
 
 public class WaitingArea {
     Semaphore limWait= new Semaphore(10, true);
-    String direction;
+    String route;
     Foyer foyer;
     ScanningMachine scanMachine;
     Bus b;
 
 
-    WaitingArea(Foyer foyer,String Direction,ScanningMachine scanMachine,Bus b){
+    WaitingArea(Foyer foyer, String route, ScanningMachine scanMachine, Bus b){
         this.foyer=foyer;
-        this.direction=Direction;
+        this.route = route;
         this.scanMachine=scanMachine;
         this.b=b;
     }
@@ -33,13 +33,13 @@ public class WaitingArea {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(c.getName()+"Customer: has enter the waiting area "+c.selectedWA.direction+ ".\t\t"+limWait.availablePermits()+" left left in waiting area"+c.selectedWA.direction);
+        System.out.println(c.getName()+"Customer: has enter the "+c.selectedWA.route + "route waiting area.\t\t"+limWait.availablePermits()+" left left in waiting area"+c.selectedWA.route);
         return true;
     }
 
     public void leaveWA(Customer c){
         limWait.release();
-        System.out.println(c.getName()+" Customer: Heading to the departure gate "+c.selectedWA.direction+ ".\t\t"+limWait.availablePermits()+" left in waiting area"+c.selectedWA.direction);
+        System.out.println(c.getName()+" Customer: Heading to the "+c.selectedWA.route + "route departure gate.\t\t"+limWait.availablePermits()+" left in waiting area"+c.selectedWA.route);
     }
 
 }

@@ -1,14 +1,18 @@
 package BusTerminal;
 
+import javax.sql.rowset.spi.TransactionalWriter;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 
 public class TicketCounterStaff extends Staff{
 
     TicketCounter tc;
     Customer c;
-    Lock l = new ReentrantLock(true); //fair lock
+    ReentrantLock l = new ReentrantLock(true); //fair lock
+
+
 
     public TicketCounterStaff(TicketCounter counter) {
         this.tc=counter;
@@ -18,22 +22,24 @@ public class TicketCounterStaff extends Staff{
         while (!Main.clear){
             try {
                 Thread.sleep(30000+new Random().nextInt(15000)); //30 second to 45 second
-                synchronized (tc){ //sync to ensure no loss of data
+                if (!Main.clear){
                     tc.toiletBreak=true;
+                    while (l.tryLock()==false){ //try until it get the lock
+                        Thread.sleep(1000); //wait 1 second to check the ticket again
+                        System.out.println(getName()+" ticket counter staff: Toilet break soon."); //try to get lock first
+                    }
+                    //acquired the lock
+                    System.out.println(getName()+" ticket counter staff: Toilet break!!");
+                    for(int i=0;i<9;i++){
+                        System.out.println(getName()+" ticket counter staff: Toilet break..."+"...".repeat(i));
+                        Thread.sleep(1000);// break 5 to 10 second
+                    }
+                    System.out.println(getName()+" ticket counter staff: Back from break!!");
+                    tc.toiletBreak=false;
+                    l.unlock();// release the lock
+                }else {
+                    break;
                 }
-                while (l.tryLock()==false){ //try until it get the lock
-                    Thread.sleep(1000); //wait 1 second to check the ticket again
-                    System.out.println(getName()+" ticket counter staff: Toilet break soon."); //try to get lock first
-                }
-                //acquired the lock
-                System.out.println(getName()+" ticket counter staff: Toilet break!!");
-                for(int i=0;i<9;i++){
-                    System.out.println(getName()+" ticket counter staff: Toilet break..."+"...".repeat(i));
-                    Thread.sleep(1000);// break 5 to 10 second
-                }
-                System.out.println(getName()+" ticket counter staff: Back from break!!");
-                tc.toiletBreak=false;
-                l.unlock();// release the lock
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

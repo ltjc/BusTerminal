@@ -1,6 +1,5 @@
 package BusTerminal;
 
-import javax.xml.stream.FactoryConfigurationError;
 import java.util.Random;
 
 public class Customer extends Thread{
@@ -111,9 +110,9 @@ public class Customer extends Thread{
             }
         }
         //going to departure //maximum of 10 people
-        if (t.station=="Left"){//setting where the customer go
+        if (t.route =="Shortest"){//setting where the customer go
             selectedWA=waL;
-        }else if (t.station=="Middle"){
+        }else if (t.route =="Medium"){
             selectedWA=waM;
         }else {
             selectedWA=waR;
@@ -136,66 +135,17 @@ public class Customer extends Thread{
             if (t.scanned==false&&t.inspected==false){//random when both are not checked
                 if (ranSeq==0){//go scan
                     t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
-                }else {// go inspect
-                    if (TI.l.tryLock() == true) { //if the customer manage to get the lock
-                        if (TI.toiletBreak == false) {
-                            try {
-                                sleep(1000);
-                                if (TI.currentLocation.equals(selectedWA.direction)){//if ticket inspector in the correct location
-                                    System.out.println(getName() + " Customer: The ticket is being inspected by the inspector");
-                                    t.inspected = true;
-                                    System.out.println(getName() + " Customer: The ticket inspected.");
-                                }else {
-                                    System.out.println(TI.getName() + " Ticket Inspector: Moving to "+selectedWA.direction+" departure gate.");
-                                    System.out.println(getName() + " Customer: The ticket is being inspected by the inspector");
-                                    TI.currentLocation=selectedWA.direction;
-                                    sleep(2000);//customer wait for 1 seconds
-                                    t.inspected = true;
-                                    System.out.println(getName() + " Customer: The ticket inspected.");
-                                }
-
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } finally {
-                                TI.l.unlock();
-                            }
-                        } else {//if the staff want to go toilet release the lock
-                            TI.l.unlock();
-                        }
-                    }
+                }else {// go inspect here
+                    TI.inspect(this);
                 }
             }else if(t.scanned==false){
                 t.scanned= selectedWA.scanMachine.scan(this);// using the scanning machine of the selected waiting area
             }else if(t.inspected==false){
-                if (TI.l.tryLock() == true) { //if the customer manage to get the lock
-                    if (TI.toiletBreak == false) {
-                        try {
-                            sleep(1000);
-                            if (TI.currentLocation.equals(selectedWA.direction)){//if ticket inspector in the correct location
-                                System.out.println(getName() + " Customer: The ticket is being inspected by the inspector");
-                                t.inspected = true;
-                                System.out.println(getName() + " Customer: The ticket inspected.");
-                            }else {
-                                System.out.println(TI.getName() + " Ticket Inspector: Moving to "+selectedWA.direction+" departure gate.");
-                                System.out.println(getName() + " Customer: The ticket is being inspected by the inspector");
-                                TI.currentLocation=selectedWA.direction;
-                                sleep(1000);//customer wait for 1 seconds
-                                t.inspected = true;
-                                System.out.println(getName() + " Customer: The ticket inspected.");
-                            }
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } finally {
-                            TI.l.unlock();
-                        }
-                    } else {//if the staff want to go toilet release the lock
-                        TI.l.unlock();
-                    }
-                }
+                TI.inspect(this); //inspect here
             }
         }
-        while (selectedWA.b.count>12){
+        System.out.println(getName()+"Customer: Prepare to board "+selectedWA.route+" route bus");
+        while (selectedWA.b.count>11){//wait for the bus if the bus is full
             synchronized (selectedWA.b){
                 try {
                     selectedWA.b.wait();
@@ -205,34 +155,26 @@ public class Customer extends Thread{
             }
         }
 
+        synchronized (selectedWA.b){ //notify the bus if any customer got in
+            selectedWA.b.enterBus();
+            System.out.println(getName()+"Customer: Got in!! "+selectedWA.route +" route bus"+"\t\t\tcount: "+selectedWA.b.count);
+            if (selectedWA.b.count==12){
+                selectedWA.b.notify();
+                System.out.println(selectedWA.route+" route Bus is full");
+            }else if (selectedWA.b.expired==true){
+                selectedWA.b.notify();
+                System.out.println(selectedWA.route+" bus will leave due to less customer.");
+            }
+        }
 
-
-
-
+        while (selectedWA.b.count!=0){
+            synchronized (selectedWA.b){//wait for the bus to reach
+                try {
+                    selectedWA.b.wait();
+                }catch (Exception e){}
+            }
+        }
         entrance.leave(this);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 

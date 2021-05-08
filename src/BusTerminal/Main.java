@@ -29,30 +29,40 @@ public class Main {
         BusDriver bd1= new BusDriver(b1);
         BusDriver bd2= new BusDriver(b2);
         BusDriver bd3= new BusDriver(b3);
-        WaitingArea waL= new WaitingArea(foyer,"Left",sm1,b1);
-        WaitingArea waM= new WaitingArea(foyer,"Middle",sm2,b2);
-        WaitingArea waR= new WaitingArea(foyer,"Right",sm3,b3);
+        WaitingArea waL= new WaitingArea(foyer,"Shortest",sm1,b1);
+        WaitingArea waM= new WaitingArea(foyer,"Medium",sm2,b2);
+        WaitingArea waR= new WaitingArea(foyer,"Furthest",sm3,b3);
+        b1.wa=waL;
+        b2.wa=waM;
+        b3.wa=waR;
         TicketInspector TI= new TicketInspector();
 
 
-        for(int i=0;i<150;i++){
+        for(int i=0;i<50;i++){
             c[i]=new Customer(e1,e2,tm,tc1,tc2,waL,waM,waR,TI,t);
 
         }
 
-        for(int i=0;i<150;i++){//TODO change this later to accommodate more people
+        for(int i=0;i<50;i++){//TODO change this later to accommodate more people
             c[i].start();
         }
         tc1.staff.start();
         tc2.staff.start();
         TI.start();
+        bd1.start();
+        bd2.start();
+        bd3.start();
 
         try {
-            for(int i=0;i<150;i++){//TODO change this later to accommodate more people
+            for(int i=0;i<50;i++){//TODO change this later to accommodate more people
                 c[i].join();
-                TI.join();
             }
-            tc2.staff.start();
+            TI.join();
+            tc1.staff.join();
+            tc2.staff.join();
+            bd1.join();
+            bd2.join();
+            bd3.join();
         }catch (Exception e){}
 
 
