@@ -8,18 +8,18 @@ public class Bus{
     Customer c;
     BusDriver bd;
     WaitingArea wa;
-    long waitTime;
+    long waitTime,currentTime;
     boolean expired;
 
     public void enterBus(){
         count++;
-        long currentTime=System.currentTimeMillis();
+        currentTime=System.currentTimeMillis();
         if(count==1){
             startTimer();
             expired=false;
         }
 
-        if (currentTime-waitTime>50000){
+        if (currentTime-waitTime>50000){ //if last customer found that its waited more than 50sec
             expired=true;
         }
     }

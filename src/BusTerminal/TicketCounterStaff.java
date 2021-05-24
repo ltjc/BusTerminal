@@ -13,7 +13,6 @@ public class TicketCounterStaff extends Staff{
     ReentrantLock l = new ReentrantLock(true); //fair lock
 
 
-
     public TicketCounterStaff(TicketCounter counter) {
         this.tc=counter;
     }

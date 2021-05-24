@@ -19,6 +19,7 @@ public class Customer extends Thread{
     boolean enteredWA=false;
     boolean enteredFoyer=false;
 
+    public Customer(){};
 
     public Customer(MainEntrance e, MainEntrance e2,TicketMachine tm,TicketCounter tc1,TicketCounter tc2,WaitingArea waL,
                     WaitingArea waM,WaitingArea waR,TicketInspector TI,Ticket t){
@@ -69,9 +70,10 @@ public class Customer extends Thread{
         boolean ticketBool=false;
         while (ticketBool==false){
             try {//time to move to other place or consider to stay
-                sleep(new Random().nextInt(1000)*5);
+                sleep(new Random().nextInt(100)*5);
             }catch (Exception e){}
             ran= new Random().nextInt(3);
+
             if (ran==0){//uses the ticket machine
                 ticketBool=tm.generateTicket(this);
 

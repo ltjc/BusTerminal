@@ -11,7 +11,7 @@ public class Guard extends Staff{
 
 
     public void run(){
-        while (true){
+        while (!Main.clear){
             if (MainEntrance.count==99){
                 MainEntrance.blocked=true;
                 System.out.println(this.getName()+" Guard: no entry");

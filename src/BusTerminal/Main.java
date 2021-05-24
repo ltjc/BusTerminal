@@ -1,9 +1,11 @@
+//This is the main class of the bus terminal system.
+//In this class all threads and shared objects will be created and initialised.
+//In addition, all thread class will be started in this class too.
+//Lastly, the join method is called for all threads to ensure the main thread wait until the termination of all threads
 package BusTerminal;
 
-import java.util.Random;
-
 public class Main {
-    static boolean clear=false;
+    static boolean clear=false; //universal static boolean flag to
 
     public static void main(String[] args) {
         Guard g1= new Guard();

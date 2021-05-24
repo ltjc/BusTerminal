@@ -14,19 +14,18 @@ public class BusDriver extends Thread{
     public void run(){
         while (true){
             //add timer here
-            startTime=System.currentTimeMillis();
-            while (b.count<12){
+            while (b.count<12&&System.currentTimeMillis()-b.currentTime<10000){ //if the number of customer is less than 12 and the bus did not wait more than 10 since the last custoemr
                 synchronized(b)
                 {
                     try{
-                        b.wait();
+                        b.wait(4000);//wake up the bus to check the condition
                         if (b.expired==true){
                             break;
                         }
                     }catch (Exception e){}
                 }
             }
-//            if (elapsedTime>5000){
+//            if (System.currentTimeMillis()-b.currentime<10000){
 //                System.out.println(getName()+"Bus Driver: Bus will depart early due to less customer.");
 //            }
             synchronized(b)
